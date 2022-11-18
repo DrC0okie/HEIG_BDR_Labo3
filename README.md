@@ -124,6 +124,31 @@ order by length;
 -- Exercice 14
 select ceil(sum(length) / (8. * 60.)) as "nb_jours"
 from film;
+
+-- Exercice 16 a)
+select count(*)
+from payment
+where amount <= 9;
+-- résultat : 15'678
+
+-- Exercice 16 b)
+delete
+from payment
+where amount <= 9;
+
+-- Exercice 16 c)
+select count(*)
+from payment
+where amount <= 9;
+-- résultat : 0
+
+-- Exercice 18
+INSERT INTO city VALUES (((SELECT max(city_id) from city) + 1), 'Nyon', (SELECT country_id from country where country = 'Switzerland'), now());
+
+INSERT INTO address VALUES (((SELECT max(address_id) from address) + 1), 'Rue du centre', NULL, 'Vaud', (SELECT city_id from city where city = 'Nyon'), '1260', '0213600000', now());
+
+INSERT INTO customer VALUES (((SELECT max(customer_id) from customer) + 1), 1, 'GUILLAUME', 'RANSOME', 'gr@bluewin.ch', (SELECT address_id from address where address = 'Rue du centre'), true, date(now()), now());
+
 ```
 
 ​	
