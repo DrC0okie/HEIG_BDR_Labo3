@@ -74,6 +74,46 @@ WHERE actor_id IN(
 )
 AND (substr(first_name, 1, 1) = 'K'
 OR (substr(last_name, 1, 1)) = 'D');
+
+
+-- Exercice 8 a)
+SELECT DISTINCT c.customer_id, last_name, first_name
+FROM customer c
+    INNER JOIN address a on a.address_id = c.address_id
+    INNER JOIN city ci on a.city_id = ci.city_id
+    INNER JOIN country co on ci.country_id = co.country_id
+WHERE co.country = 'Spain'
+AND EXISTS(SELECT customer_id FROM rental where return_date IS NULL);
+
+-- Exercice 8 b)
+SELECT DISTINCT c.customer_id, last_name, first_name
+FROM customer c
+    INNER JOIN address a on a.address_id = c.address_id
+    INNER JOIN city ci on a.city_id = ci.city_id
+    INNER JOIN country co on ci.country_id = co.country_id
+WHERE co.country = 'Spain'
+AND c.customer_id IN(SELECT customer_id FROM rental where return_date IS NULL);
+
+-- Exercice 8 c)
+SELECT DISTINCT c.customer_id, last_name, first_name
+FROM customer c
+    INNER JOIN address a on a.address_id = c.address_id
+    INNER JOIN city ci on a.city_id = ci.city_id
+    INNER JOIN country co on ci.country_id = co.country_id
+    INNER JOIN rental r on c.customer_id = r.customer_id
+WHERE co.country = 'Spain'
+AND r.return_date IS NULL;
+
+-- Exercice 10
+SELECT f.title, count(*) As "nb_actors"
+from film f
+    INNER JOIN film_actor fa on f.film_id = fa.film_id
+    INNER JOIN film_category fc on f.film_id = fc.film_id
+    INNER JOIN category c on fc.category_id = c.category_id
+WHERE c.name = 'Drama'
+group by f.title
+having count(*) < 5
+ORDER BY count(*) desc;
 ```
 
 ​	
