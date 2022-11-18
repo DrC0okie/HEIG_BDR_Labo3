@@ -83,7 +83,7 @@ FROM customer c
     INNER JOIN city ci on a.city_id = ci.city_id
     INNER JOIN country co on ci.country_id = co.country_id
 WHERE co.country = 'Spain'
-AND EXISTS(SELECT customer_id FROM rental where return_date IS NULL);
+AND EXISTS(SELECT r.customer_id FROM rental r where return_date IS NULL AND c.customer_id = r.customer_id);
 
 -- Exercice 8 b)
 SELECT DISTINCT c.customer_id, last_name, first_name
@@ -114,6 +114,16 @@ WHERE c.name = 'Drama'
 group by f.title
 having count(*) < 5
 ORDER BY count(*) desc;
+
+-- Exercice 12
+SELECT film_id, title, length
+from film
+where length IN (select min(length) from film)
+order by length;
+
+-- Exercice 14
+select ceil(sum(length) / (8. * 60.)) as "nb_jours"
+from film;
 ```
 
 ​	
