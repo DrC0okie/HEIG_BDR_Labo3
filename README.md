@@ -44,6 +44,13 @@ WHERE city_id = 171
 ORDER BY first_name;
 
 -- Exercice 5
+SELECT c1.first_name, c1.last_name, c2.first_name, c2.last_name, i.film_id
+FROM film f
+         INNER JOIN inventory i on f.film_id = i.film_id
+         INNER JOIN rental r1 on i.inventory_id = r1.inventory_id
+         INNER JOIN rental r2 on i.inventory_id = r2.inventory_id AND r1.customer_id <> r2.customer_id
+         INNER JOIN customer c1 on r1.customer_id = c1.customer_id
+         INNER JOIN customer c2 on r2.customer_id = c2.customer_id;
 
 -- Exercice 6
 SELECT last_name, first_name
