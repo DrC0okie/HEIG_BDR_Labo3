@@ -66,7 +66,29 @@ WHERE actor_id IN (SELECT actor_id
                                                                              WHERE name = 'Horror'))))
   AND (substr(first_name, 1, 1) = 'K'
     OR (substr(last_name, 1, 1)) = 'D');
+	
+	
+-- Exercice 7 a) Avec NOT IN
 
+SELECT f.film_id, title, ROUND(rental_rate / rental_duration, 3) AS daily_location_price
+FROM film f
+         INNER JOIN inventory i on f.film_id = i.film_id
+WHERE i.inventory_id NOT IN (SELECT inventory_id
+                             FROM rental)
+  AND f.rental_rate / f.rental_duration < 1;
+
+-- Exercice 7 b) Avec opération ensembliste
+
+SELECT f.film_id, title, ROUND(rental_rate / rental_duration, 3) AS daily_location_price
+FROM film f
+         INNER JOIN inventory i on f.film_id = i.film_id
+WHERE (i.inventory_id =
+       (SELECT inventory_id
+        FROM inventory
+        EXCEPT
+        (SELECT inventory_id
+         FROM rental)))
+  AND f.rental_rate / f.rental_duration < 1;
 
 -- Exercice 8 a)
 SELECT DISTINCT c.customer_id, last_name, first_name
