@@ -410,10 +410,39 @@ AND r.return_date IS NULL;
 ##### Requête
 
 ```sql
-
+SELECT DISTINCT
+    c.customer_id as "numéro",
+    c.last_name as "nom",
+    c.first_name as "prénom"
+FROM customer c
+    INNER JOIN rental r
+        ON c.customer_id = r.customer_id
+    INNER JOIN inventory i
+        ON r.inventory_id = i.inventory_id
+    INNER JOIN film f
+        ON f.film_id = i.film_id
+    INNER JOIN film_actor fa
+        ON f.film_id = fa.film_id
+    INNER JOIN actor a
+        ON fa.actor_id = a.actor_id
+WHERE a.first_name = 'EMILY'
+AND a.last_name = 'DEE'
+GROUP by c.customer_id, c.last_name, c.first_name
+HAVING COUNT(DISTINCT i.film_id) = (
+    SELECT COUNT(*)
+    FROM actor a
+        INNER JOIN film_actor fa
+            ON a.actor_id = fa.actor_id
+        INNER JOIN film f
+            ON fa.film_id = f.film_id
+    WHERE a.first_name = 'EMILY'
+    AND a.last_name = 'DEE'
+);
 ```
 
 ##### Résultat
+
+![image-20221122200838540](./media/image-20221122200838540.png)
 
 #### Exercice 10
 
@@ -499,10 +528,36 @@ FROM film;
 ##### Requête
 
 ```sql
-
+SELECT
+    c.customer_id AS "id",
+    last_name AS "nom",
+    email,
+    country AS "pays",
+    COUNT(r.rental_id) AS "nb_locations",
+    SUM(p.amount) AS "depense_totale",
+    AVG(p.amount) AS "depense_moyenne"
+FROM customer c
+    INNER JOIN address a
+        ON a.address_id = c.address_id
+    INNER JOIN city ci
+        ON ci.city_id = a.city_id
+    INNER JOIN country co
+        ON co.country_id = ci.country_id
+    INNER JOIN rental r
+        ON c.customer_id = r.customer_id
+    INNER JOIN payment p
+        ON r.rental_id = p.rental_id
+WHERE country = 'Switzerland'
+OR country = 'Spain'
+OR country = 'Germany'
+GROUP BY  c.customer_id, last_name, email, country
+HAVING AVG(p.amount) > 3.0
+ORDER BY country, c.last_name;
 ```
 
 ##### Résultat
+
+![image-20221122210043806](./media/image-20221122210043806.png)
 
 #### Exercice 16
 
