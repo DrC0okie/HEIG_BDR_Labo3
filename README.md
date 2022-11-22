@@ -27,17 +27,17 @@ FROM address a
                     on c.country_id = co.country_id
 
 WHERE co.country = 'France'
-  OR (co.country_id >= 63
-  AND co.country_id <= 67)
+   OR (co.country_id >= 63
+    AND co.country_id <= 67)
 ORDER BY co.country, c.city, a.postal_code;
 
 -- Exercice 4
 SELECT customer_id, first_name, last_name
 FROM customer c
-        INNER JOIN address a
-            on c.address_id = a.address_id
-        INNER JOIN store s
-            on c.store_id = s.store_id
+         INNER JOIN address a
+                    on c.address_id = a.address_id
+         INNER JOIN store s
+                    on c.store_id = s.store_id
 WHERE city_id = 171
   AND c.store_id = 1
   AND c.active
@@ -55,99 +55,124 @@ FROM film f
 -- Exercice 6
 SELECT last_name, first_name
 FROM actor
-WHERE actor_id IN(
-    SELECT actor_id
-    FROM film_actor
-    WHERE film_id IN (
-        SELECT film_id
-        FROM film
-        WHERE film_id IN (
-            SELECT film_id
-            FROM film_category
-            WHERE category_id IN (
-                SELECT category_id
-                FROM category
-                WHERE name = 'Horror'
-            )
-        )
-    )
-)
-AND (substr(first_name, 1, 1) = 'K'
-OR (substr(last_name, 1, 1)) = 'D');
+WHERE actor_id IN (SELECT actor_id
+                   FROM film_actor
+                   WHERE film_id IN (SELECT film_id
+                                     FROM film
+                                     WHERE film_id IN (SELECT film_id
+                                                       FROM film_category
+                                                       WHERE category_id IN (SELECT category_id
+                                                                             FROM category
+                                                                             WHERE name = 'Horror'))))
+  AND (substr(first_name, 1, 1) = 'K'
+    OR (substr(last_name, 1, 1)) = 'D');
 
 
 -- Exercice 8 a)
 SELECT DISTINCT c.customer_id, last_name, first_name
 FROM customer c
-    INNER JOIN address a on a.address_id = c.address_id
-    INNER JOIN city ci on a.city_id = ci.city_id
-    INNER JOIN country co on ci.country_id = co.country_id
+         INNER JOIN address a on a.address_id = c.address_id
+         INNER JOIN city ci on a.city_id = ci.city_id
+         INNER JOIN country co on ci.country_id = co.country_id
 WHERE co.country = 'Spain'
-AND EXISTS(SELECT r.customer_id FROM rental r where return_date IS NULL AND c.customer_id = r.customer_id);
+  AND EXISTS(SELECT r.customer_id FROM rental r where return_date IS NULL AND c.customer_id = r.customer_id);
 
 -- Exercice 8 b)
 SELECT DISTINCT c.customer_id, last_name, first_name
 FROM customer c
-    INNER JOIN address a on a.address_id = c.address_id
-    INNER JOIN city ci on a.city_id = ci.city_id
-    INNER JOIN country co on ci.country_id = co.country_id
+         INNER JOIN address a on a.address_id = c.address_id
+         INNER JOIN city ci on a.city_id = ci.city_id
+         INNER JOIN country co on ci.country_id = co.country_id
 WHERE co.country = 'Spain'
-AND c.customer_id IN(SELECT customer_id FROM rental where return_date IS NULL);
+  AND c.customer_id IN (SELECT customer_id FROM rental where return_date IS NULL);
 
 -- Exercice 8 c)
 SELECT DISTINCT c.customer_id, last_name, first_name
 FROM customer c
-    INNER JOIN address a on a.address_id = c.address_id
-    INNER JOIN city ci on a.city_id = ci.city_id
-    INNER JOIN country co on ci.country_id = co.country_id
-    INNER JOIN rental r on c.customer_id = r.customer_id
+         INNER JOIN address a on a.address_id = c.address_id
+         INNER JOIN city ci on a.city_id = ci.city_id
+         INNER JOIN country co on ci.country_id = co.country_id
+         INNER JOIN rental r on c.customer_id = r.customer_id
 WHERE co.country = 'Spain'
-AND r.return_date IS NULL;
+  AND r.return_date IS NULL;
 
 -- Exercice 10
-SELECT f.title, count(*) As "nb_actors"
-from film f
-    INNER JOIN film_actor fa on f.film_id = fa.film_id
-    INNER JOIN film_category fc on f.film_id = fc.film_id
-    INNER JOIN category c on fc.category_id = c.category_id
+SELECT f.title, COUNT(*) AS "nb_actors"
+FROM film f
+         INNER JOIN film_actor fa on f.film_id = fa.film_id
+         INNER JOIN film_category fc on f.film_id = fc.film_id
+         INNER JOIN category c on fc.category_id = c.category_id
 WHERE c.name = 'Drama'
-group by f.title
-having count(*) < 5
-ORDER BY count(*) desc;
+GROUP BY f.title
+HAVING COUNT(*) < 5
+ORDER BY COUNT(*) DESC;
+
+-- Exercice 11
+SELECT c.category_id, c.name, COUNT(*) AS nb_films
+FROM film f
+         INNER JOIN film_category fc on f.film_id = fc.film_id
+         INNER JOIN category c on fc.category_id = c.category_id
+GROUP BY c.name, c.category_id
+HAVING COUNT(*) > 65
+ORDER BY nb_films;
 
 -- Exercice 12
 SELECT film_id, title, length
-from film
-where length IN (select min(length) from film)
-order by length;
+FROM film
+WHERE length IN (SELECT min(length) FROM film)
+ORDER BY length;
+
+-- Exercice 13 a)
+SELECT DISTINCT f.film_id, f.title
+FROM film f
+         INNER JOIN film_actor fa on f.film_id = fa.film_id
+WHERE fa.actor_id IN (SELECT actor_id
+                      FROM film_actor fa
+                      GROUP BY fa.actor_id
+                      HAVING COUNT(*) > 40);
+
+-- Exercice 13 b)
+SELECT DISTINCT f.film_id, f.title
+FROM film f
+         INNER JOIN film_actor fa on f.film_id = fa.film_id
+         INNER JOIN (SELECT fa.actor_id
+                     FROM film_actor fa
+                     GROUP BY fa.actor_id
+                     HAVING COUNT(*) > 40) actors on fa.actor_id = actors.actor_id;
 
 -- Exercice 14
-select ceil(sum(length) / (8. * 60.)) as "nb_jours"
-from film;
+SELECT ceil(sum(length) / (8. * 60.)) AS "nb_jours"
+FROM film;
 
 -- Exercice 16 a)
-select count(*)
-from payment
-where amount <= 9;
+SELECT count(*)
+FROM payment
+WHERE amount <= 9;
 -- résultat : 15'678
 
 -- Exercice 16 b)
-delete
-from payment
-where amount <= 9;
+DELETE
+FROM payment
+WHERE amount <= 9;
 
 -- Exercice 16 c)
-select count(*)
-from payment
-where amount <= 9;
+SELECT count(*)
+FROM payment
+WHERE amount <= 9;
 -- résultat : 0
 
 -- Exercice 18
-INSERT INTO city VALUES (((SELECT max(city_id) from city) + 1), 'Nyon', (SELECT country_id from country where country = 'Switzerland'), now());
+INSERT INTO city
+VALUES (((SELECT max(city_id) FROM city) + 1), 'Nyon', (SELECT country_id FROM country where country = 'Switzerland'),
+        now());
 
-INSERT INTO address VALUES (((SELECT max(address_id) from address) + 1), 'Rue du centre', NULL, 'Vaud', (SELECT city_id from city where city = 'Nyon'), '1260', '0213600000', now());
+INSERT INTO address
+VALUES (((SELECT max(address_id) FROM address) + 1), 'Rue du centre', NULL, 'Vaud',
+        (SELECT city_id FROM city WHERE city = 'Nyon'), '1260', '0213600000', now());
 
-INSERT INTO customer VALUES (((SELECT max(customer_id) from customer) + 1), 1, 'GUILLAUME', 'RANSOME', 'gr@bluewin.ch', (SELECT address_id from address where address = 'Rue du centre'), true, date(now()), now());
+INSERT INTO customer
+VALUES (((SELECT max(customer_id) FROM customer) + 1), 1, 'GUILLAUME', 'RANSOME', 'gr@bluewin.ch',
+        (SELECT address_id FROM address WHERE address = 'Rue du centre'), true, date(now()), now());
 
 ```
 
