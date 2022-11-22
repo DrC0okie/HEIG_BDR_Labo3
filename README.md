@@ -331,15 +331,53 @@ OR (substr(last_name, 1, 1)) = 'D');
 
 ![image-20221122170837521](./media/image-20221122170837521.png)
 
-#### Exercice 7
+#### Exercice 7a
 
 ##### Requête
 
 ```sql
-
+-- Exercice 7 a) Avec NOT IN
+SELECT DISTINCT
+	f1.film_id AS "id",
+    title AS "titre",
+    rental_rate / rental_duration AS "prix_de_location_par_jour"
+FROM film f1
+WHERE rental_rate / rental_duration <= 1
+  AND film_id NOT IN (SELECT f2.film_id
+                      FROM film f2
+                               INNER JOIN inventory i on f2.film_id = i.film_id
+                               INNER JOIN rental r on i.inventory_id = r.inventory_id);
 ```
 
 ##### Résultat
+
+![7a](./media/Ex7a.png)
+
+#### Exercice 7b
+
+##### Requête
+
+```sql
+-- Exercice 7 b) Avec EXCEPT
+SELECT DISTINCT
+	f1.film_id AS "id",
+    f1.title AS "titre",
+    f1.rental_rate / f1.rental_duration AS "prix_de_location_par_jour"
+FROM film f1
+WHERE rental_rate / rental_duration <= 1
+EXCEPT
+SELECT
+	f2.film_id AS "id", 
+	f2.title AS "titre",
+    f2.rental_rate / f2.rental_duration AS "prix_de_location_par_jour"
+FROM film f2
+         INNER JOIN inventory i on f2.film_id = i.film_id
+         INNER JOIN rental r on i.inventory_id = r.inventory_id;       
+```
+
+##### Résultat
+
+![7b](./media/Ex7b.png)
 
 #### Exercice 8
 
@@ -474,10 +512,22 @@ ORDER BY count(*) DESC;
 ##### Requête
 
 ```sql
-
+-- Exercice 11
+SELECT
+	c.category_id AS "id",
+	c.name AS "nom",
+	COUNT(*) AS "nb_films"
+FROM film f
+         INNER JOIN film_category fc on f.film_id = fc.film_id
+         INNER JOIN category c on fc.category_id = c.category_id
+GROUP BY c.name, c.category_id
+HAVING COUNT(*) > 65
+ORDER BY nb_films;
 ```
 
 ##### Résultat
+
+![11](./media/Ex11.png)
 
 #### Exercice 12
 
@@ -499,15 +549,43 @@ WHERE length IN(
 
 ![image-20221122171713233](./media/image-20221122171713233.png)
 
-#### Exercice 13
+#### Exercice 13a
 
 ##### Requête
 
 ```sql
-
+-- Exercice 13 a)
+SELECT DISTINCT f.film_id, f.title
+FROM film f
+         INNER JOIN film_actor fa on f.film_id = fa.film_id
+WHERE fa.actor_id IN (SELECT actor_id
+                      FROM film_actor fa
+                      GROUP BY fa.actor_id
+                      HAVING COUNT(*) > 40);
 ```
 
 ##### Résultat
+
+![11a](./media/Ex13a.png)
+
+#### Exercice 13b
+
+##### Requête
+
+```sql
+-- Exercice 13 b)
+SELECT DISTINCT f.film_id, f.title
+FROM film f
+         INNER JOIN film_actor fa on f.film_id = fa.film_id
+         INNER JOIN (SELECT fa.actor_id
+                     FROM film_actor fa
+                     GROUP BY fa.actor_id
+                     HAVING COUNT(*) > 40) AS actors on fa.actor_id = actors.actor_id;
+```
+
+##### Résultat
+
+![11b](./media/Ex13a.png)
 
 #### Exercice 14
 
