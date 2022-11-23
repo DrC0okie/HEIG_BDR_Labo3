@@ -1,14 +1,4 @@
-# BDR : Laboratoire n⁰ 3
-
-## Par Tim Van Hove et Thomas Germano
-
-### Exercices
-
-#### Exercice 1
-
-##### Requête
-
-```sql
+-- Exercice 1
 SELECT
     customer_id,
     last_name AS "nom",
@@ -17,19 +7,10 @@ FROM customer c
          INNER JOIN store s
                     ON c.store_id = s.store_id
 WHERE c.first_name = 'PHYLLIS'
-ORDER BY 
+ORDER BY
 	customer_id DESC;
-```
 
-##### Résultat
-
-![image-20221122164901301](./media/image-20221122164901301.png)
-
-#### Exercice 2
-
-##### Requête
-
-```sql
+-- Exercice 2
 SELECT
     title AS "titre",
     release_year AS "annee_sortie"
@@ -37,19 +18,10 @@ FROM film f
 WHERE f.rating = 'R'
   AND f.length < 60
   AND f.replacement_cost = 12.99
-ORDER BY 
+ORDER BY
 	f.title;
-```
 
-##### Résultat
-
-![image-20221122165011674](./media/image-20221122165011674.png)
-
-#### Exercice 3
-
-##### Requête
-
-```sql
+-- Exercice 3
 SELECT
     country,
     city,
@@ -62,21 +34,12 @@ FROM address a
 WHERE co.country = 'France'
   OR (co.country_id >= 63
   AND co.country_id <= 67)
-ORDER BY 
-	co.country, 
-	c.city, 
+ORDER BY
+	co.country,
+	c.city,
 	a.postal_code;
-```
 
-##### Résultat
-
-![image-20221122165215704](./media/image-20221122165215704.png)
-
-#### Exercice 4
-
-##### Requête
-
-```sql
+-- Exercice 4
 SELECT
     customer_id,
     first_name AS "prenom",
@@ -89,44 +52,28 @@ FROM customer c
 WHERE city_id = 171
   AND c.store_id = 1
   AND c.active
-ORDER BY 
+ORDER BY
 	first_name;
-```
 
-##### Résultat
-
-![image-20221122165336644](./media/image-20221122165336644.png)
-
-#### Exercice 5
-
-##### Requête
-
-```sql
+-- Exercice 5
 SELECT
     c1.first_name AS prenom_1,
     c1.last_name AS nom_1,
     c2.first_name AS prenom_2,
     c2.last_name AS nom_2
 FROM film f
-         INNER JOIN inventory i 
+         INNER JOIN inventory i
          	ON f.film_id = i.film_id
-         INNER JOIN rental r1 
+         INNER JOIN rental r1
          	ON i.inventory_id = r1.inventory_id
-         INNER JOIN rental r2 
+         INNER JOIN rental r2
          	ON i.inventory_id = r2.inventory_id AND r1.customer_id <> r2.customer_id
-         INNER JOIN customer c1 
+         INNER JOIN customer c1
          	ON r1.customer_id = c1.customer_id
-         INNER JOIN customer c2 
+         INNER JOIN customer c2
          	ON r2.customer_id = c2.customer_id;
-```
 
-##### Résultat
-
-#### Exercice 6
-
-##### Requête
-
-```sql
+-- Exercice 6
 SELECT
     last_name AS "nom",
     first_name AS "prenom"
@@ -150,17 +97,8 @@ WHERE actor_id IN(
 )
 AND (substr(first_name, 1, 1) = 'K'
 OR (substr(last_name, 1, 1)) = 'D');
-```
 
-##### Résultat
-
-![image-20221122170837521](./media/image-20221122170837521.png)
-
-#### Exercice 7 a)
-
-##### Requête
-
-```sql
+-- Exercice 7 a)
 SELECT DISTINCT
 	f1.film_id AS "id",
     title AS "titre",
@@ -169,21 +107,12 @@ FROM film f1
 WHERE rental_rate / rental_duration <= 1
   AND film_id NOT IN (SELECT f2.film_id
                       FROM film f2
-                      	INNER JOIN inventory i 
+                      	INNER JOIN inventory i
                       		ON f2.film_id = i.film_id
-                        INNER JOIN rental r 
+                        INNER JOIN rental r
                       		ON i.inventory_id = r.inventory_id);
-```
 
-##### Résultat
-
-![7a](./media/Ex7a.png)
-
-#### Exercice 7 b)
-
-##### Requête
-
-```sql
+-- Exercice 7 b)
 SELECT DISTINCT
 	f1.film_id AS "id",
     f1.title AS "titre",
@@ -192,25 +121,16 @@ FROM film f1
 WHERE rental_rate / rental_duration <= 1
 EXCEPT
 SELECT
-	f2.film_id AS "id", 
+	f2.film_id AS "id",
 	f2.title AS "titre",
     f2.rental_rate / f2.rental_duration AS "prix_de_location_par_jour"
 FROM film f2
-         INNER JOIN inventory i 
+         INNER JOIN inventory i
          	ON f2.film_id = i.film_id
-         INNER JOIN rental r 
-         	ON i.inventory_id = r.inventory_id;       
-```
+         INNER JOIN rental r
+         	ON i.inventory_id = r.inventory_id;
 
-##### Résultat
-
-![7b](./media/Ex7b.png)
-
-#### Exercice 8 a)
-
-##### Requête
-
-```sql
+-- Exercice 8 a)
 SELECT DISTINCT
     c.customer_id AS "id",
     last_name AS "nom",
@@ -226,20 +146,11 @@ WHERE co.country = 'Spain'
 AND EXISTS(SELECT
                r.customer_id
            FROM rental r
-           WHERE return_date IS NULL 
+           WHERE return_date IS NULL
              AND c.customer_id = r.customer_id
     );
-```
 
-##### Résultat
-
-![image-20221122171421095](./media/image-20221122171421095.png)
-
-#### Exercice 8 b)
-
-##### Requête
-
-```sql
+-- Exercice 8 b)
 SELECT DISTINCT
     c.customer_id AS "id",
     last_name AS "nom",
@@ -252,20 +163,11 @@ FROM customer c
     INNER JOIN country co
         ON ci.country_id = co.country_id
 WHERE co.country = 'Spain'
-AND c.customer_id IN(SELECT customer_id 
-                     FROM rental 
+AND c.customer_id IN(SELECT customer_id
+                     FROM rental
                      WHERE return_date IS NULL);
-```
 
-##### Résultat
-
-![image-20221122171421095](./media/image-20221122171421095.png)
-
-#### Exercice 8 c)
-
-##### Requête
-
-```sql
+-- Exercice 8 c)
 SELECT DISTINCT
     c.customer_id AS "id",
     last_name AS "nom",
@@ -281,17 +183,8 @@ FROM customer c
         ON c.customer_id = r.customer_id
 WHERE co.country = 'Spain'
 AND r.return_date IS NULL;
-```
 
-##### Résultat
-
-![image-20221122171421095](./media/image-20221122171421095.png)
-
-#### Exercice 9
-
-##### Requête
-
-```sql
+-- Exercice 9
 SELECT DISTINCT
     c.customer_id as "numéro",
     c.last_name as "nom",
@@ -309,9 +202,9 @@ FROM customer c
         ON fa.actor_id = a.actor_id
 WHERE a.first_name = 'EMILY'
 AND a.last_name = 'DEE'
-GROUP BY 
-	c.customer_id, 
-	c.last_name, 
+GROUP BY
+	c.customer_id,
+	c.last_name,
 	c.first_name
 HAVING COUNT(DISTINCT i.film_id) = (
     SELECT COUNT(*)
@@ -323,17 +216,8 @@ HAVING COUNT(DISTINCT i.film_id) = (
     WHERE a.first_name = 'EMILY'
     AND a.last_name = 'DEE'
 );
-```
 
-##### Résultat
-
-![image-20221123085735903](./media/image-20221123085735903.png)
-
-#### Exercice 10
-
-##### Requête
-
-```sql
+-- Exercice 10
 SELECT
     f.title AS "titre",
     count(*) AS "nb_acteurs"
@@ -345,22 +229,13 @@ FROM film f
     INNER JOIN category c
         ON fc.category_id = c.category_id
 WHERE c.name = 'Drama'
-GROUP BY 
+GROUP BY
 	f.title
 HAVING COUNT(*) < 5
-ORDER BY 
+ORDER BY
 	COUNT(*) DESC;
-```
 
-##### Résultat
-
-![image-20221122171528724](./media/image-20221122171528724.png)
-
-#### Exercice 11
-
-##### Requête
-
-```sql
+-- Exercice 11
 SELECT
 	c.category_id AS "id",
 	c.name AS "nom",
@@ -368,23 +243,14 @@ SELECT
 FROM film f
          INNER JOIN film_category fc on f.film_id = fc.film_id
          INNER JOIN category c on fc.category_id = c.category_id
-GROUP BY 
-	c.name, 
+GROUP BY
+	c.name,
 	c.category_id
 HAVING COUNT(*) > 65
-ORDER BY 
+ORDER BY
 	nb_films;
-```
 
-##### Résultat
-
-![11](./media/Ex11.png)
-
-#### Exercice 12
-
-##### Requête
-
-```sql
+-- Exercice 12
 SELECT
     film_id AS "id",
     title AS "titre",
@@ -394,74 +260,38 @@ WHERE length IN(
     SELECT
         MIN(length)
     FROM film);
-```
 
-##### Résultat
-
-![image-20221122171713233](./media/image-20221122171713233.png)
-
-#### Exercice 13 a)
-
-##### Requête
-
-```sql
-SELECT DISTINCT 
-	f.film_id AS id, 
+-- Exercice 13 a)
+SELECT DISTINCT
+	f.film_id AS id,
 	f.title AS titre
 FROM film f
-         INNER JOIN film_actor fa 
+         INNER JOIN film_actor fa
          	ON f.film_id = fa.film_id
 WHERE fa.actor_id IN (SELECT actor_id
                       FROM film_actor fa
                       GROUP BY fa.actor_id
                       HAVING COUNT(*) > 40);
-```
 
-##### Résultat
-
-![image-20221123091922808](./media/image-20221123091922808.png)
-
-#### Exercice 13 b)
-
-##### Requête
-
-```sql
-SELECT DISTINCT 
-	f.film_id AS id, 
+-- Exercice 13 b)
+SELECT DISTINCT
+	f.film_id AS id,
 	f.title AS titre
 FROM film f
-         INNER JOIN film_actor fa 
+         INNER JOIN film_actor fa
          	ON f.film_id = fa.film_id
          INNER JOIN (SELECT fa.actor_id
                      FROM film_actor fa
                      GROUP BY fa.actor_id
-                     HAVING COUNT(*) > 40) AS actors 
+                     HAVING COUNT(*) > 40) AS actors
          	ON fa.actor_id = actors.actor_id;
-```
 
-##### Résultat
-
-![image-20221123092033861](./media/image-20221123092033861.png)
-
-#### Exercice 14
-
-##### Requête
-
-```sql
-SELECT 
+-- Exercice 14
+SELECT
     CEIL(SUM(length) / (8. * 60.)) AS "nb_jours"
 FROM film;
-```
 
-##### Résultat
-
-![image-20221122171808678](./media/image-20221122171808678.png)
-
-#### Exercice 15
-
-##### Requête
-
-```sql
+-- Exercice 15
 SELECT
     c.customer_id AS "id",
     last_name AS "nom",
@@ -484,31 +314,20 @@ FROM customer c
 WHERE country = 'Switzerland'
 OR country = 'Spain'
 OR country = 'Germany'
-GROUP BY  
-	c.customer_id, 
-	last_name, 
-	email, 
+GROUP BY
+	c.customer_id,
+	last_name,
+	email,
 	country
 HAVING AVG(p.amount) > 3.0
-ORDER BY 
-	country, 
+ORDER BY
+	country,
 	c.last_name;
-```
 
-##### Résultat
-
-![image-20221123085941001](./media/image-20221123085941001.png)
-
-#### Exercice 16
-
-##### Requête
-
-```sql
 -- Exercice 16 a)
 SELECT COUNT(*)
 FROM payment
 WHERE amount <= 9;
--- résultat : 15'678
 
 -- Exercice 16 b)
 DELETE
@@ -519,34 +338,21 @@ WHERE amount <= 9;
 SELECT COUNT(*)
 FROM payment
 WHERE amount <= 9;
--- résultat : 0
-```
 
-##### Résultat
-
-#### Exercice 17
-
-##### Requête
-
-```sql
+-- Exercice 17
 UPDATE payment
-    SET amount = amount * 1.5, 
+    SET amount = amount * 1.5,
         payment_date = NOW()
 WHERE
     amount > 4;
-```
 
-#### Exercice 18
-
-##### Requête
-
-```sql
+-- Exercice 18
 INSERT INTO city (city, country_id)
 VALUES (
         'Nyon',
-        (SELECT 
-         	country_id 
-         FROM country 
+        (SELECT
+         	country_id
+         FROM country
          WHERE country = 'Switzerland')
 );
 
@@ -555,9 +361,9 @@ INSERT INTO address (address, district, city_id, postal_code, phone)
 VALUES (
         'Rue du centre',
         'Vaud',
-        (SELECT 
-         	city_id 
-         FROM city 
+        (SELECT
+         	city_id
+         FROM city
          WHERE city = 'Nyon'),
         '1260',
         '0213600000'
@@ -570,36 +376,29 @@ VALUES (
         'GUILLAUME',
         'RANSOME',
         'gr@bluewin.ch',
-        (SELECT 
-         	address_id 
-         FROM address 
+        (SELECT
+         	address_id
+         FROM address
          WHERE address = 'Rue du centre'),
         TRUE
 );
 
 SELECT
-    first_name, 
-    last_name, 
-    address, 
-    postal_code, 
-    city, 
-    country, 
-    phone, 
-    email, 
+    first_name,
+    last_name,
+    address,
+    postal_code,
+    city,
+    country,
+    phone,
+    email,
     customer.store_id
 FROM customer
-    INNER JOIN address a 
+    INNER JOIN address a
     	ON a.address_id = customer.address_id
-    INNER JOIN city ci 
+    INNER JOIN city ci
     	ON ci.city_id = a.city_id
-    INNER JOIN country c 
+    INNER JOIN country c
     	ON ci.country_id = c.country_id
 WHERE first_name = 'GUILLAUME'
 AND last_name = 'RANSOME';
-```
-
-##### Résultat
-
-![image-20221122174324313](./media/image-20221122174324313.png)
-
-##### Réponses aux questions
