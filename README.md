@@ -638,3 +638,4 @@ AND last_name = 'RANSOME';
 
 ###### b)
 
+Car les IDs sont, dans cette base de données, la clé primaire de chaque table. En conséquence, les IDs doivent être `UNIQUE` et `NOT NULL`, ce qui fait que la base de données préfère les générer automatiquement elle-même et ne laisse pas le choix à l'utilisateur afin d'être sûr que les IDs valident bien ces conditions. 
