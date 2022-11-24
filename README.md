@@ -103,22 +103,22 @@ ORDER BY
 ##### Requête
 
 ```sql
-SELECT
-    c1.first_name AS prenom_1,
-    c1.last_name AS nom_1,
-    c2.first_name AS prenom_2,
-    c2.last_name AS nom_2
+SELECT DISTINCT
+	c1.first_name AS "prenom_1",
+    c1.last_name AS "nom_1",
+    c2.first_name AS "prenom_2",
+    c2.last_name AS "nom_2"
 FROM film f
-         INNER JOIN inventory i 
-         	ON f.film_id = i.film_id
-         INNER JOIN rental r1 
-         	ON i.inventory_id = r1.inventory_id
-         INNER JOIN rental r2 
-         	ON i.inventory_id = r2.inventory_id AND r1.customer_id <> r2.customer_id
+         INNER JOIN inventory i
+         ON f.film_id = i.film_id
+         INNER JOIN rental r1
+         ON i.inventory_id = r1.inventory_id
+         INNER JOIN rental r2
+         ON i.inventory_id = r2.inventory_id AND r1.customer_id < r2.customer_id
          INNER JOIN customer c1 
-         	ON r1.customer_id = c1.customer_id
+         ON r1.customer_id = c1.customer_id
          INNER JOIN customer c2 
-         	ON r2.customer_id = c2.customer_id;
+         ON r2.customer_id = c2.customer_id;
 ```
 
 ##### Résultat
