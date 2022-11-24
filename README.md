@@ -123,7 +123,7 @@ FROM film f
 
 ##### Résultat
 
-![image-20221124173235384](./media/image-20221124173235384.png)
+![image-20221124185106220](./media/image-20221124185106220.png)
 
 #### Exercice 6
 
